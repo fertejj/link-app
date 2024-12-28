@@ -85,6 +85,7 @@ const Login: React.FC = () => {
           </button>
           <div>
             <button
+              type="button" // Este cambio es importante
               className="w-full px-4 py-2 text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
               onClick={handleGoogleLogin}
             >

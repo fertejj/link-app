@@ -2,11 +2,13 @@ import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
+import { useAuth } from "../context/AuthContext"; // Importar el contexto de autenticación
 
 const Nav: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { user } = useAuth(); // Obtener el usuario autenticado
 
   const handleLogout = async () => {
     try {
@@ -33,7 +35,7 @@ const Nav: React.FC = () => {
   return (
     <nav className="bg-blue-600 text-white">
       {/* Contenedor Principal */}
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center ">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         {/* Logo */}
         <h1 className="text-lg font-bold">
           <NavLink to="/" className="hover:underline">
@@ -43,34 +45,33 @@ const Nav: React.FC = () => {
 
         {/* Botón Hamburguesa */}
         <button
-  className="lg:hidden absolute top-4 right-4 z-50 text-white focus:outline-none"
-  onClick={() => setIsMenuOpen(!isMenuOpen)}
->
-  <svg
-    className="w-6 h-6"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    {isMenuOpen ? (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M6 18L18 6M6 6l12 12"
-      />
-    ) : (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M4 6h16M4 12h16m-7 6h7"
-      />
-    )}
-  </svg>
-</button>
-
+          className="lg:hidden absolute top-4 right-4 z-50 text-white focus:outline-none"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <svg
+            className="w-6 h-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            {isMenuOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            )}
+          </svg>
+        </button>
 
         {/* Menú de Navegación */}
         <div
@@ -80,38 +81,61 @@ const Nav: React.FC = () => {
           }`}
         >
           <ul className="flex flex-col lg:flex-row lg:gap-4 items-center space-y-4 lg:space-y-0 p-4 lg:p-0">
-            <li>
-              <NavLink
-                to="/dashboard"
-                className="block hover:underline transition duration-200"
-              >
-                Dashboard
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/analytics"
-                className="block hover:underline transition duration-200"
-              >
-                Analíticas
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/profile"
-                className="block hover:underline transition duration-200"
-              >
-                Perfil
-              </NavLink>
-            </li>
-            <li>
-              <button
-                onClick={handleLogout}
-                className="block hover:underline transition duration-200"
-              >
-                Cerrar sesión
-              </button>
-            </li>
+            {user ? (
+              <>
+                <li>
+                  <NavLink
+                    to="/dashboard"
+                    className="block hover:underline transition duration-200"
+                  >
+                    Dashboard
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/analytics"
+                    className="block hover:underline transition duration-200"
+                  >
+                    Analíticas
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/profile"
+                    className="block hover:underline transition duration-200"
+                  >
+                    Perfil
+                  </NavLink>
+                </li>
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="block hover:underline transition duration-200"
+                  >
+                    Cerrar sesión
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <NavLink
+                    to="/login"
+                    className="block hover:underline transition duration-200"
+                  >
+                    Iniciar Sesión
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/register"
+                    className="block hover:underline transition duration-200"
+                  >
+                    Registrarse
+                  </NavLink>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

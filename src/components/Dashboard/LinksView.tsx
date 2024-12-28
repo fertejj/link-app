@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import useLinks from "../../hooks/useLinks";
+import { useAuth } from "../../context/AuthContext";
 
 const LinksView: React.FC = () => {
+  const { user } = useAuth(); // Obtenemos el usuario autenticado
   const { links, loading, handleAddLink, handleUpdateLink, handleDeleteLink } = useLinks();
   const [newTitle, setNewTitle] = useState("");
   const [newUrl, setNewUrl] = useState("");
 
+  // Función para agregar un nuevo enlace
   const addNewLink = () => {
     if (newTitle && newUrl) {
       handleAddLink(newTitle, newUrl);
@@ -13,6 +16,17 @@ const LinksView: React.FC = () => {
       setNewUrl("");
     }
   };
+
+  // Mostrar mensaje si no hay un usuario logueado
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-lg font-bold text-red-500">
+          Debes iniciar sesión para acceder a esta página.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
