@@ -7,7 +7,6 @@ import {
     doc,
   } from "firebase/firestore";
   import { db } from "./firebase";
-import { useAuth } from "../context/AuthContext";
 
   
   export interface Link {
