@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
-import { useAuth } from "../context/AuthContext"; // Importar el contexto de autenticación
+import { useAuth } from "../context/AuthContext";
 
 const Nav: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { user } = useAuth(); // Obtener el usuario autenticado
+  const { user } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -19,76 +18,85 @@ const Nav: React.FC = () => {
     }
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-      setIsMenuOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
-    <nav className="bg-blue-600 text-white">
-      {/* Contenedor Principal */}
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+    <header className="bg-blue-800 text-white shadow-md fixed w-full z-50">
+      <div className="container mx-auto flex justify-between items-center py-4 px-6">
         {/* Logo */}
-        <h1 className="text-lg font-bold">
-          <NavLink to="/" className="hover:underline">
-            Link Manager
+        <div className="flex items-center space-x-4">
+          <NavLink to="/" className="text-xl font-bold tracking-wide hover:text-blue-400">
+            LinkApp
           </NavLink>
-        </h1>
+        </div>
 
-        {/* Botón Hamburguesa */}
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex space-x-6">
+          {user ? (
+            <>
+              <NavLink
+                to="/dashboard"
+                className="hover:text-blue-400 transition"
+              >
+                Dashboard
+              </NavLink>
+              <NavLink
+                to="/analytics"
+                className="hover:text-blue-400 transition"
+              >
+                Analíticas
+              </NavLink>
+              <NavLink
+                to="/profile"
+                className="hover:text-blue-400 transition"
+              >
+                Perfil
+              </NavLink>
+              <button
+                onClick={handleLogout}
+                className="hover:text-red-400 transition"
+              >
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink
+                to="/login"
+                className="hover:text-blue-400 transition"
+              >
+                Iniciar Sesión
+              </NavLink>
+              <NavLink
+                to="/register"
+                className="hover:text-blue-400 transition"
+              >
+                Registrarse
+              </NavLink>
+            </>
+          )}
+        </nav>
+
+        {/* Mobile Menu Button */}
         <button
-          className="lg:hidden absolute top-4 right-4 z-50 text-white focus:outline-none"
+          className="lg:hidden flex items-center focus:outline-none"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          <svg
-            className="w-6 h-6"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            {isMenuOpen ? (
-              <path 
-                className="hidden"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
-            )}
-          </svg>
+          <span className="material-icons text-white">
+            {isMenuOpen ? "close" : "menu"}
+          </span>
         </button>
+      </div>
 
-        {/* Menú de Navegación */}
-        <div
-          ref={menuRef}
-          className={`lg:flex lg:items-center lg:space-x-6 absolute lg:static bg-blue-600 w-full lg:w-auto left-0 lg:left-auto top-0 lg:top-auto transition-all duration-300 z-10 ${
-            isMenuOpen ? "block absolute z-0 top-12" : "hidden"
-          }`}
-        >
-          <ul className="flex flex-col lg:flex-row lg:gap-4 items-center space-y-4 lg:space-y-0 p-4 lg:p-0">
+      {/* Mobile Navigation */}
+      {isMenuOpen && (
+        <nav className="lg:hidden bg-blue-800 text-white py-4">
+          <ul className="space-y-4 px-6">
             {user ? (
               <>
                 <li>
                   <NavLink
                     to="/dashboard"
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="block hover:underline transition duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block hover:text-blue-400"
                   >
                     Dashboard
                   </NavLink>
@@ -96,8 +104,8 @@ const Nav: React.FC = () => {
                 <li>
                   <NavLink
                     to="/analytics"
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="block hover:underline transition duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block hover:text-blue-400"
                   >
                     Analíticas
                   </NavLink>
@@ -105,20 +113,19 @@ const Nav: React.FC = () => {
                 <li>
                   <NavLink
                     to="/profile"
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="block hover:underline transition duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block hover:text-blue-400"
                   >
                     Perfil
                   </NavLink>
                 </li>
                 <li>
                   <button
-
                     onClick={() => {
-                      setIsMenuOpen(!isMenuOpen)
-                      handleLogout()
+                      setIsMenuOpen(false);
+                      handleLogout();
                     }}
-                    className="block hover:underline transition duration-200"
+                    className="block hover:text-red-400"
                   >
                     Cerrar sesión
                   </button>
@@ -129,8 +136,8 @@ const Nav: React.FC = () => {
                 <li>
                   <NavLink
                     to="/login"
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="block hover:underline transition duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block hover:text-blue-400"
                   >
                     Iniciar Sesión
                   </NavLink>
@@ -138,8 +145,8 @@ const Nav: React.FC = () => {
                 <li>
                   <NavLink
                     to="/register"
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="block hover:underline transition duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block hover:text-blue-400"
                   >
                     Registrarse
                   </NavLink>
@@ -147,9 +154,9 @@ const Nav: React.FC = () => {
               </>
             )}
           </ul>
-        </div>
-      </div>
-    </nav>
+        </nav>
+      )}
+    </header>
   );
 };
 

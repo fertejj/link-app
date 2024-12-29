@@ -1,22 +1,17 @@
 import {
-    collection,
-    getDocs,
-    addDoc,
-    updateDoc,
-    deleteDoc,
-    doc,
-  } from "firebase/firestore";
-  import { db } from "./firebase";
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+import { db } from "./firebase";
+import { Link } from "../models/Links"
 
-  
-  export interface Link {
-    id: string;
-    title: string;
-    url: string;
-  }
-  
-  const getUserLinksCollection = (uid: string) => collection(db, `/users/${uid}/links`);
-  
+const getUserLinksCollection = (uid: string) =>
+  collection(db, `/users/${uid}/links`);
+
 // Fetch Links - Solo del usuario autenticado
 export const fetchLinks = async (uid: string): Promise<Link[]> => {
   const userLinksCollection = getUserLinksCollection(uid);
@@ -26,7 +21,7 @@ export const fetchLinks = async (uid: string): Promise<Link[]> => {
     ...doc.data(),
   })) as Link[];
 };
-  
+
 // Add Link - Guardar con UID del usuario
 export const addLink = async (
   uid: string,
@@ -36,8 +31,8 @@ export const addLink = async (
   const userLinksCollection = getUserLinksCollection(uid);
   await addDoc(userLinksCollection, { title, url, uid });
 };
-  
- // Update Link - Solo para un documento específico
+
+// Update Link - Solo para un documento específico
 export const updateLink = async (
   uid: string,
   id: string,
@@ -55,4 +50,3 @@ export const deleteLink = async (uid: string, id: string): Promise<void> => {
   const linkDoc = doc(userLinksCollection, id);
   await deleteDoc(linkDoc);
 };
-  

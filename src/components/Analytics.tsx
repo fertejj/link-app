@@ -2,7 +2,7 @@
 
 const Analytics = () => {
   return (
-    <div>Analytics</div>
+    <div className="py-80">Analytics</div>
   )
 }
 

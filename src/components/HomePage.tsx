@@ -12,7 +12,7 @@ const {user} = useAuth();
     }    
 
   return (
-    <div className="min-h-screen flex flex-col ">
+    <div className="min-h-screen flex flex-col pt-14">
       {/* Hero Section */}
       <section className="bg-blue-600 text-white py-20">
         <div className="container mx-auto text-center">
