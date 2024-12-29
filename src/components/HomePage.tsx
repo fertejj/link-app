@@ -12,7 +12,7 @@ const {user} = useAuth();
     }    
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col ">
       {/* Hero Section */}
       <section className="bg-blue-600 text-white py-20">
         <div className="container mx-auto text-center">
@@ -32,7 +32,7 @@ const {user} = useAuth();
       </section>
 
       {/* Features Section */}
-      <section id="features" className="bg-gray-100  py-10">
+      <section id="features" className="bg-gray-100  py-10 px-2">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-bold mb-8">
             ¿Por qué elegir EnlacesApp?
@@ -66,10 +66,10 @@ const {user} = useAuth();
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="bg-gray-100 py-20">
+      <section id="pricing" className="bg-gray-100 py-20 px-2">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-bold mb-8">Elige tu Plan</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="p-6 shadow-lg rounded bg-white">
               <h3 className="text-xl font-semibold mb-2">Gratis</h3>
               <p>Funciones básicas para uso personal.</p>
@@ -90,17 +90,6 @@ const {user} = useAuth();
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
                 Obtener Pro
-              </a>
-            </div>
-            <div className="p-6 shadow-lg rounded bg-white">
-              <h3 className="text-xl font-semibold mb-2">Empresas</h3>
-              <p>Solución integral para equipos.</p>
-              <p className="text-2xl font-bold mb-4">$29.99/mes</p>
-              <a
-                href="/signup"
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Obtener Empresas
               </a>
             </div>
           </div>

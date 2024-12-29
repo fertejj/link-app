@@ -13,7 +13,7 @@ const Nav: React.FC = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
@@ -87,6 +87,7 @@ const Nav: React.FC = () => {
                 <li>
                   <NavLink
                     to="/dashboard"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="block hover:underline transition duration-200"
                   >
                     Dashboard
@@ -95,6 +96,7 @@ const Nav: React.FC = () => {
                 <li>
                   <NavLink
                     to="/analytics"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="block hover:underline transition duration-200"
                   >
                     Analíticas
@@ -103,6 +105,7 @@ const Nav: React.FC = () => {
                 <li>
                   <NavLink
                     to="/profile"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="block hover:underline transition duration-200"
                   >
                     Perfil
@@ -110,7 +113,11 @@ const Nav: React.FC = () => {
                 </li>
                 <li>
                   <button
-                    onClick={handleLogout}
+
+                    onClick={() => {
+                      setIsMenuOpen(!isMenuOpen)
+                      handleLogout()
+                    }}
                     className="block hover:underline transition duration-200"
                   >
                     Cerrar sesión
