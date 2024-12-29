@@ -9,6 +9,7 @@ const useLinks = () => {
 
   const loadLinks = async () => {
     if (!user) return; // Si no hay usuario, no intentamos cargar datos
+
     setLoading(true);
     const fetchedLinks = await fetchLinks(user.uid);
     setLinks(fetchedLinks);
@@ -17,6 +18,7 @@ const useLinks = () => {
 
   const handleAddLink = async (title: string, url: string) => {
     if (!user) return; // Si no hay usuario, evitamos la operación
+    
     await addLink(user.uid, title, url);
     loadLinks();
   };

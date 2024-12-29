@@ -56,7 +56,8 @@ const Nav: React.FC = () => {
             stroke="currentColor"
           >
             {isMenuOpen ? (
-              <path
+              <path 
+                className="hidden"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}

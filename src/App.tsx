@@ -7,6 +7,7 @@ import Register from "./components/Auth/Register";
 import Analytics from "./components/Analytics";
 import Profile from "./components/Auth/Profile";
 import { AuthProvider } from "./context/AuthContext";
+import HomePage from "./components/HomePage"
 
 const App: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ const App: React.FC = () => {
     <Router>
       <Nav />
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<LinksView />} />
