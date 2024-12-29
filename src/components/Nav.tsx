@@ -129,6 +129,7 @@ const Nav: React.FC = () => {
                 <li>
                   <NavLink
                     to="/login"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="block hover:underline transition duration-200"
                   >
                     Iniciar Sesión
@@ -137,6 +138,7 @@ const Nav: React.FC = () => {
                 <li>
                   <NavLink
                     to="/register"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="block hover:underline transition duration-200"
                   >
                     Registrarse
