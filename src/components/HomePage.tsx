@@ -3,18 +3,16 @@ import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const HomePage: React.FC = () => {
-const {user} = useAuth();
+  const { user } = useAuth();
 
-    if(user) {
-        return(
-            <Navigate to="/dashboard" />
-        )
-    }    
+  if (user) {
+    return <Navigate to="/dashboard" />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col pt-14">
       {/* Hero Section */}
-      <section className="bg-blue-600 text-white py-20">
+      <section className="bg-blue-600 text-white py-20 px-2">
         <div className="container mx-auto text-center">
           <h1 className="text-4xl font-bold mb-4">
             Conecta, Comparte y Crece con LinkApp
@@ -23,7 +21,8 @@ const {user} = useAuth();
             Crea tu página personalizada de enlaces para mostrar todo tu
             contenido en un solo lugar.
           </p>
-          <Link to='/register'
+          <Link
+            to="/register"
             className="px-6 py-3 bg-white text-blue-600 font-semibold rounded hover:bg-gray-100"
           >
             Comienza Gratis
@@ -84,7 +83,7 @@ const {user} = useAuth();
             <div className="p-6 shadow-lg rounded bg-white">
               <h3 className="text-xl font-semibold mb-2">Pro</h3>
               <p>Herramientas avanzadas para profesionales.</p>
-              <p className="text-2xl font-bold mb-4">$9.99/mes</p>
+              <p className="text-2xl font-bold mb-4">$4.99/mes</p>
               <a
                 href="/signup"
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

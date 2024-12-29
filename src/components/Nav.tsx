@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
+import { IoMenu, IoClose } from "react-icons/io5";
 
 const Nav: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,7 +24,11 @@ const Nav: React.FC = () => {
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
         {/* Logo */}
         <div className="flex items-center space-x-4">
-          <NavLink to="/" className="text-xl font-bold tracking-wide hover:text-blue-400">
+          <NavLink
+            to="/"
+            onClick={() => setIsMenuOpen(false)}
+            className="text-xl font-bold tracking-wide hover:text-blue-400"
+          >
             LinkApp
           </NavLink>
         </div>
@@ -44,10 +49,7 @@ const Nav: React.FC = () => {
               >
                 Analíticas
               </NavLink>
-              <NavLink
-                to="/profile"
-                className="hover:text-blue-400 transition"
-              >
+              <NavLink to="/profile" className="hover:text-blue-400 transition">
                 Perfil
               </NavLink>
               <button
@@ -59,10 +61,7 @@ const Nav: React.FC = () => {
             </>
           ) : (
             <>
-              <NavLink
-                to="/login"
-                className="hover:text-blue-400 transition"
-              >
+              <NavLink to="/login" className="hover:text-blue-400 transition">
                 Iniciar Sesión
               </NavLink>
               <NavLink
@@ -81,7 +80,7 @@ const Nav: React.FC = () => {
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <span className="material-icons text-white">
-            {isMenuOpen ? "close" : "menu"}
+            {isMenuOpen ? <IoClose className="text-2xl" /> : <IoMenu className="text-2xl"/>}
           </span>
         </button>
       </div>
