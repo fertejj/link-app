@@ -10,7 +10,7 @@ const PublicPage: React.FC = () => {
   const [publicPage, setPublicPage] = useState<PublicPageModel | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const { links, loadLinks } = useLinks();
+  const { links } = useLinks();
 
   useEffect(() => {
     const fetchPublicPage = async () => {
