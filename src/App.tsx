@@ -7,25 +7,25 @@ import Register from "./components/Auth/Register";
 import Analytics from "./components/Analytics";
 import Profile from "./components/Auth/Profile";
 import { AuthProvider } from "./context/AuthContext";
-import HomePage from "./components/HomePage"
+import HomePage from "./components/HomePage";
+import PublicPage from "./assets/pages/PublicPage";
 
 const App: React.FC = () => {
   return (
     <AuthProvider>
-
-    <Router>
-      <Nav />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<LinksView />} />
-        <Route path="/add-link" element={<LinksView />} />
-        <Route path="/profile" element={<Profile/>} />
-        <Route path="/analytics" element={<Analytics />} />
-      </Routes>
-    </Router>
-
+      <Router>
+        <Nav />
+        <Routes>
+          <Route path="/:username" element={<PublicPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<LinksView />} />
+          <Route path="/add-link" element={<LinksView />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/analytics" element={<Analytics />} />
+        </Routes>
+      </Router>
     </AuthProvider>
   );
 };
