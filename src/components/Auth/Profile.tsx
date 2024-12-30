@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../services/firebase";
+import { createPublicPage } from "../PublicPage/services/PublicPageService";
 
 const Profile: React.FC = () => {
   const { user } = useAuth(); // Accede al usuario desde el contexto
@@ -42,7 +43,18 @@ const Profile: React.FC = () => {
   const handleSaveChanges = async () => {
     if (user) {
       try {
-        await updateDoc(doc(db, "users", user.uid), formData);
+        const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+
+        if (userDoc.exists()) {
+          // Actualiza el documento existente
+          await updateDoc(userRef, formData);
+        } else {
+          // Crea un nuevo documento con el campo username
+          await setDoc(userRef, { ...formData, username: formData.username });
+          await createPublicPage(user.uid, formData.username);
+        }
+
         console.log("Perfil actualizado correctamente.");
         setIsEditing(false);
       } catch (error) {
@@ -95,7 +107,9 @@ const Profile: React.FC = () => {
                 className="w-full px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             ) : (
-              <p className="text-gray-900">{formData.username || "No disponible"}</p>
+              <p className="text-gray-900">
+                {formData.username || "No disponible"}
+              </p>
             )}
           </div>
           <div>
@@ -111,7 +125,9 @@ const Profile: React.FC = () => {
                 className="w-full px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             ) : (
-              <p className="text-gray-900">{formData.birthdate || "No disponible"}</p>
+              <p className="text-gray-900">
+                {formData.birthdate || "No disponible"}
+              </p>
             )}
           </div>
           <div>
