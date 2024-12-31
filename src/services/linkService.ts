@@ -6,7 +6,7 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "./firebase/config";
 import { Link } from "../models/Links"
 
 const getUserLinksCollection = (uid: string) =>

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../../services/firebase";
+import { auth, googleProvider, db } from "../../services/firebase/config";
 import { useAuth } from "../../context/AuthContext";
 import { Navigate } from "react-router-dom";
+import { doc, setDoc } from "firebase/firestore";
+import { createPublicPage } from "../PublicPage/services/PublicPageService";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -23,17 +25,36 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user2 = result.user;
-      console.log("Usuario logueado con Google:", user2);
-    } catch (error) {
-      console.error("Error durante el inicio de sesión con Google:", error);
-    }
-  };
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     const result = await signInWithPopup(auth, googleProvider);
+  //     const { user } = result;
 
-  // Si el usuario está autenticado, redirigir a /dashboard
+  //     if (user) {
+  //       // Guardar la información del usuario en Firestore
+  //       const userRef = doc(db, "users", user.uid);
+  //       await setDoc(
+  //         userRef,
+  //         {
+  //           username: user.displayName
+  //             ?.replace(" ", "_")
+  //             .replace(" ", "_")
+  //             .replace(" ", "_")
+  //             .replace(" ", "_"),
+  //           email: user.email,
+  //           photoURL: user.photoURL || "",
+  //           createdAt: new Date().toISOString(),
+  //         },
+  //         { merge: true } // Esto asegura que no se sobrescriban los datos existentes
+  //       );
+  //     }
+
+  //     console.log("Usuario logueado con Google:", user);
+  //   } catch (error) {
+  //     console.error("Error durante el inicio de sesión con Google:", error);
+  //   }
+  // };
+
   if (user) {
     return <Navigate to="/dashboard" />;
   }
@@ -83,7 +104,7 @@ const Login: React.FC = () => {
           >
             Iniciar Sesión
           </button>
-          <div>
+          {/* <div>
             <button
               type="button" // Este cambio es importante
               className="w-full px-4 py-2 text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -91,7 +112,7 @@ const Login: React.FC = () => {
             >
               Iniciar sesión con Google
             </button>
-          </div>
+          </div> */}
           {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
         </form>
         <p className="text-sm text-center text-gray-600">

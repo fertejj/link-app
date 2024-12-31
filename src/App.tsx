@@ -1,14 +1,14 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Nav from "./components/Nav";
+import Nav from "./components/commons/Nav";
 import LinksView from "./components/Dashboard/LinksView";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
-import Analytics from "./components/Analytics";
+import Analytics from "./components/Analytics/Analytics";
 import Profile from "./components/Auth/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import HomePage from "./components/HomePage";
-import PublicPage from "./assets/pages/PublicPage";
+import PublicPage from "./components/PublicPage";
 
 const App: React.FC = () => {
   return (

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../../services/firebase";
+import { auth, db } from "../../services/firebase/config";
 import { doc, setDoc } from "firebase/firestore";
+
 import { useAuth } from "../../context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { createPublicPage } from "../PublicPage/services/PublicPageService";
+import { createPublicPage } from "../../services/PublicPageService";
 
 const Register: React.FC = () => {
   const { user } = useAuth();

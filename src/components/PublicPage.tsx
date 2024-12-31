@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../services/firebase";
-import { PublicPageModel } from "../../components/PublicPage/models/PublicPageModel";
-import useLinks from "../../hooks/useLinks";
+import { db } from "../services/firebase/config";
+import { PublicPageModel } from "../models/PublicPageModel";
+import useLinks from "../hooks/useLinks";
 
 const PublicPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();

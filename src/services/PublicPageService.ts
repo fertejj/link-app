@@ -1,5 +1,7 @@
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "../../../services/firebase";
+import { deleteDoc, doc, setDoc } from "firebase/firestore";
+import { db } from "../services/firebase/config";
+
+
 
 /**
  * Crea una página pública inicial para el usuario.
@@ -23,3 +25,13 @@ export const createPublicPage = async (uid: string, username: string) => {
     throw new Error("Error al crear la página pública");
   }
 };
+
+// Función para actualizar una página pública existente
+export const updatePublicPage = async (publicPageRef: any, formData: any) => {
+  try {
+    await setDoc(publicPageRef, formData, { merge: true })
+  } catch (error) {
+    throw new Error("Error al actualizar la página pública: " + error);
+  }
+};
+

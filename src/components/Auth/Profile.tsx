@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { db } from "../../services/firebase/config";
 import { useAuth } from "../../context/AuthContext";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../services/firebase";
-import { createPublicPage } from "../PublicPage/services/PublicPageService";
+import { deleteDoc, doc, getDoc } from "firebase/firestore";
+import { createPublicPage, updatePublicPage } from "../../services/PublicPageService";
+import { createUser, updateUser } from "../../services/UserService";
 
 const Profile: React.FC = () => {
+  
   const { user } = useAuth(); // Accede al usuario desde el contexto
   const [formData, setFormData] = useState({
     username: "",
@@ -41,37 +43,47 @@ const Profile: React.FC = () => {
 
   // Guardar cambios en Firestore
   const handleSaveChanges = async () => {
-    if (user) {
-      try {
-        const userRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userRef);
-
-        if (userDoc.exists()) {
-          // Actualiza el documento existente
-          await updateDoc(userRef, formData);
-        } else {
-          // Crea un nuevo documento con el campo username
-          await setDoc(userRef, { ...formData, username: formData.username });
-          await createPublicPage(user.uid, formData.username);
-        }
-
-        console.log("Perfil actualizado correctamente.");
-        setIsEditing(false);
-      } catch (error) {
-        console.error("Error al actualizar el perfil:", error);
+    if (!user) return;
+  
+    try {
+      const userRef = doc(db, "users", user.uid);
+  
+      // Obtén los datos actuales del usuario
+      const userDoc = await getDoc(userRef);
+      const currentData = userDoc.exists() ? userDoc.data() : {};
+      const previousUsername = currentData.username || null;
+  
+      const newUsername = formData.username;
+      const publicPageRef = doc(db, "public_pages", newUsername);
+  
+      if (previousUsername && previousUsername !== newUsername) {
+        // Eliminar el documento asociado al username anterior
+        const oldPublicPageRef = doc(db, "public_pages", previousUsername);
+        await deleteDoc(oldPublicPageRef);
       }
+  
+      // Actualizar o crear el documento en "users"
+      if (userDoc.exists()) {
+        await updateUser(userRef, formData);
+      } else {
+        await createUser(userRef, formData);
+      }
+  
+      // Crear o actualizar el documento en "public_pages"
+      const publicPageDoc = await getDoc(publicPageRef);
+      if (publicPageDoc.exists()) {
+        await updatePublicPage(publicPageRef, formData);
+      } else {
+        await createPublicPage(user.uid, newUsername);
+      }
+  
+      console.log("Perfil actualizado correctamente.");
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error al actualizar el perfil:", error);
     }
   };
-
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Por favor, inicia sesión para ver tu perfil.
-        </h1>
-      </div>
-    );
-  }
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-2">
@@ -83,14 +95,14 @@ const Profile: React.FC = () => {
           <label className="block text-sm font-medium text-center text-gray-700">
             Foto de Perfil:
           </label>
-          {user.photoURL ? (
+          {user?.photoURL ? (
             <img
               src={user.photoURL}
               alt="Foto de Perfil"
               className="w-24 h-24 mt-2 rounded-full mx-auto"
             />
           ) : (
-            <p className="text-gray-900">No disponible</p>
+            <p className="text-gray-900">Imagen no disponible</p>
           )}
         </div>
         <div className="space-y-4">

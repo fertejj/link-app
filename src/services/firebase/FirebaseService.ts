@@ -1,5 +1,5 @@
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../services/firebase"; // Importa tu configuración de Firestore
+import { db } from "./config"; // Importa tu configuración de Firestore
 
 /**
  * Guarda la información del usuario en Firestore.
