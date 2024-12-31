@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchLinks, addLink, updateLink, deleteLink } from "../services/linkService";
 import { useAuth } from "../context/AuthContext";
-import { Link } from "../models/Links";
+import { Link } from "../models/Link";
 
 const useLinks = () => {
   const [links, setLinks] = useState<Link[]>([]);

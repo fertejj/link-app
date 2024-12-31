@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../services/firebase/config";
-import { PublicPageModel } from "../models/PublicPageModel";
+import { PublicPage } from "../models/PublicPage";
 import useLinks from "../hooks/useLinks";
 
-const PublicPage: React.FC = () => {
+const UserPublicPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
-  const [publicPage, setPublicPage] = useState<PublicPageModel | null>(null);
+  const [publicPage, setPublicPage] = useState<PublicPage | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const { links } = useLinks();
@@ -22,7 +22,7 @@ const PublicPage: React.FC = () => {
         // Buscar la página pública por username
         const querySnapshot = await getDoc(doc(db, "public_pages", username));
         if (querySnapshot.exists()) {
-          setPublicPage(querySnapshot.data() as PublicPageModel);
+          setPublicPage(querySnapshot.data() as PublicPage);
         } else {
           setError("Página no encontrada");
         }
@@ -75,4 +75,4 @@ const PublicPage: React.FC = () => {
   );
 };
 
-export default PublicPage;
+export default UserPublicPage;

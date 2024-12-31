@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "../../models/Links";
+import { Link } from "../../models/Link";
 
 type LinksListProps = {
   links: Link[];

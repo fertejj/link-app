@@ -8,7 +8,7 @@ import Analytics from "./components/Analytics/Analytics";
 import Profile from "./components/Auth/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import HomePage from "./components/HomePage";
-import PublicPage from "./components/PublicPage";
+import UserPublicPage from "./components/UserPublicPage";
 
 const App: React.FC = () => {
   return (
@@ -16,7 +16,7 @@ const App: React.FC = () => {
       <Router>
         <Nav />
         <Routes>
-          <Route path="/:username" element={<PublicPage />} />
+          <Route path="/:username" element={<UserPublicPage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

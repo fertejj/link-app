@@ -7,7 +7,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "./firebase/config";
-import { Link } from "../models/Links"
+import { Link } from "../models/Link";
 
 const getUserLinksCollection = (uid: string) =>
   collection(db, `/users/${uid}/links`);
@@ -26,10 +26,11 @@ export const fetchLinks = async (uid: string): Promise<Link[]> => {
 export const addLink = async (
   uid: string,
   title: string,
-  url: string
+  url: string,
+  id: string,
 ): Promise<void> => {
   const userLinksCollection = getUserLinksCollection(uid);
-  await addDoc(userLinksCollection, { title, url, uid });
+  await addDoc(userLinksCollection, { title, url, uid, id });
 };
 
 // Update Link - Solo para un documento específico
