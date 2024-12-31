@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { fetchLinks, addLink, updateLink, deleteLink } from "../services/linkService";
+import {
+  fetchLinks,
+  addLink,
+  updateLink,
+  deleteLink,
+} from "../services/linkService";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "../models/Link";
 
@@ -19,12 +24,16 @@ const useLinks = () => {
 
   const handleAddLink = async (title: string, url: string) => {
     if (!user) return; // Si no hay usuario, evitamos la operación
-    
-    await addLink(user.uid, title, url);
+    const newId:string = (links.length++).toString()
+    await addLink(user.uid, title, url, newId );
     loadLinks();
   };
 
-  const handleUpdateLink = async (id: string, updatedTitle: string, updatedUrl: string) => {
+  const handleUpdateLink = async (
+    id: string,
+    updatedTitle: string,
+    updatedUrl: string
+  ) => {
     if (!user) return; // Si no hay usuario, evitamos la operación
     await updateLink(user.uid, id, updatedTitle, updatedUrl);
     loadLinks();
