@@ -5,42 +5,49 @@ import { PublicPage } from "../models/PublicPage";
 
 /**
  * Custom hook para obtener los datos de una página pública basada en un nombre de usuario.
- * Realiza una consulta a Firestore para buscar los datos de una página asociada al nombre de usuario proporcionado.
  *
  * @param {string | undefined} username - Nombre de usuario de la página pública que se desea obtener.
- * @returns {object} - Contiene la página pública (`publicPage`) y cualquier error encontrado (`error`).
+ * @returns {object} - Contiene la página pública (`publicPage`), cualquier error encontrado (`error`), y un indicador de carga (`isLoading`).
  */
 const usePublicPage = (username: string | undefined) => {
-  const [publicPage, setPublicPage] = useState<PublicPage | null>(null); // Estado para almacenar la página pública
-  const [error, setError] = useState<string | null>(null); // Estado para manejar errores
+  const [publicPage, setPublicPage] = useState<PublicPage | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchPublicPage = useCallback(async () => {
     if (!username) {
       setError("El nombre de usuario no es válido");
-      setPublicPage(null); // Limpiar estado si no hay username
+      setPublicPage(null);
       return;
     }
+
+    setIsLoading(true);
+    setError(null);
+
     try {
-      const querySnapshot = await getDoc(doc(db, "public_pages", username)); // Consulta Firestore con el nombre de usuario
-      if (querySnapshot.exists()) {
-        setPublicPage(querySnapshot.data() as PublicPage); // Guarda los datos de la página en el estado
-        setError(null); // Limpiar errores si la consulta es exitosa
+      const publicPageRef = doc(db, "public_pages", username);
+      const publicPageDoc = await getDoc(publicPageRef);
+
+      if (publicPageDoc.exists()) {
+        setPublicPage(publicPageDoc.data() as PublicPage);
       } else {
-        setPublicPage(null); // Limpiar datos si no se encuentra la página
-        setError("Página no encontrada"); // Actualizar estado de error
+        setPublicPage(null);
+        setError("Página no encontrada");
       }
     } catch (err) {
-      console.error(err);
-      setPublicPage(null); // Limpiar datos en caso de error
-      setError("Error al cargar la página pública"); // Manejo de errores en la consulta
+      console.error("Error al obtener la página pública:", err);
+      setPublicPage(null);
+      setError("Error al cargar la página pública");
+    } finally {
+      setIsLoading(false);
     }
   }, [username]);
 
   useEffect(() => {
     fetchPublicPage();
-  }, [fetchPublicPage]); // Dependencia en la versión memorizada de fetchPublicPage
+  }, [fetchPublicPage]);
 
-  return { publicPage, error }; // Retorna la página pública y el error
+  return { publicPage, error, isLoading };
 };
 
 export default usePublicPage;
