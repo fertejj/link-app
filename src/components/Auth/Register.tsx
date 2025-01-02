@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../../services/firebase/config";
-import { doc, setDoc } from "firebase/firestore";
-
 import { useAuth } from "../../context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { createPublicPage } from "../../services/PublicPageService";
+import { useRegister } from "../../hooks/useRegister";
 
 const Register: React.FC = () => {
   const { user } = useAuth();
+  const { registerUser, error } = useRegister();
 
-  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,39 +14,29 @@ const Register: React.FC = () => {
     birthdate: "",
   });
 
+  const [image, setImage] = useState<File | null>(null); // Estado para almacenar la imagen
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]); // Guardar el archivo seleccionado
+    }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      // Crear usuario con Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
-      const user = userCredential.user;
 
-      // Guardar información adicional en Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        username: formData.username,
-        birthdate: formData.birthdate,
-        email: formData.email,
-        createdAt: new Date().toISOString(),
-      });
-
-      // Crear página pública del usuario
-      await createPublicPage(user.uid, formData.username);
-
+    // Llamar a la función para registrar usuario, pasando la imagen
+    const success = await registerUser(formData, image);
+    if (success) {
       console.log("Registro exitoso");
-      setError(null);
-    } catch (err) {
-      setError("Error al registrar. Inténtalo nuevamente.");
     }
   };
 
@@ -130,6 +116,21 @@ const Register: React.FC = () => {
               value={formData.password}
               onChange={handleInputChange}
               required
+              className="w-full px-4 py-2 mt-1 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="photo"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Foto de perfil:
+            </label>
+            <input
+              type="file"
+              id="photo"
+              accept="image/*"
+              onChange={handleImageChange}
               className="w-full px-4 py-2 mt-1 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
