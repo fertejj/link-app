@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { db, storage } from "../../services/firebase/config";
 import { useAuth } from "../../context/AuthContext";
-import { deleteDoc, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { createPublicPage, updatePublicPage } from "../../services/PublicPageService";
-import { createUser, updateUser } from "../../services/UserService";
+import { updateUser } from "../../services/UserService";
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
@@ -52,7 +52,6 @@ const Profile: React.FC = () => {
     if (!user) return;
 
     try {
-      const userRef = doc(db, "users", user.uid);
 
       // Subir la nueva imagen a Firebase Storage si se seleccionó
       let updatedPhotoURL = formData.photoURL;
@@ -62,9 +61,12 @@ const Profile: React.FC = () => {
         updatedPhotoURL = await getDownloadURL(imageRef);
       }
 
+
+
       // Actualizar Firestore con la nueva información
       const updatedData = { ...formData, photoURL: updatedPhotoURL };
       await updateUser(user.uid, updatedData);
+
 
       // Actualizar o crear la página pública
       const publicPageRef:any = doc(db, "public_pages", formData.username.toString());

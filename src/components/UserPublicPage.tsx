@@ -1,7 +1,6 @@
 import React from "react";
 import StatusMessage from "../components/StatusMessage";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import usePublicPage from "../hooks/usePublicPage";
 import useLinks from "../hooks/useLinks";
 import useUser from "../hooks/useUser";
