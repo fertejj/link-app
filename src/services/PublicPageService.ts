@@ -29,7 +29,7 @@ export const createPublicPage = async (uid: string, username: string) => {
  * @param formData - Datos para actualizar la página.
  */
 export const updatePublicPage = async (username: string, formData: any) => {
-  const publicPageRef = doc(db, "public_pages", username);
+  const publicPageRef = doc(db, "public_pages", username.toString());
 
   try {
     await setDoc(publicPageRef, formData, { merge: true });

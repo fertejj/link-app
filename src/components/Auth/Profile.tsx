@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../../services/firebase/config";
+import { db, storage } from "../../services/firebase/config";
 import { useAuth } from "../../context/AuthContext";
 import { deleteDoc, doc, getDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { createPublicPage, updatePublicPage } from "../../services/PublicPageService";
 import { createUser, updateUser } from "../../services/UserService";
 
 const Profile: React.FC = () => {
-  
-  const { user } = useAuth(); // Accede al usuario desde el contexto
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     birthdate: "",
@@ -15,8 +15,8 @@ const Profile: React.FC = () => {
     email: "",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [newImage, setNewImage] = useState<File | null>(null);
 
-  // Cargar datos del usuario desde Firestore
   useEffect(() => {
     const fetchUserData = async () => {
       if (user) {
@@ -35,7 +35,6 @@ const Profile: React.FC = () => {
     fetchUserData();
   }, [user]);
 
-  // Manejar cambios en el formulario
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -43,57 +42,52 @@ const Profile: React.FC = () => {
     });
   };
 
-  // Guardar cambios en Firestore
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setNewImage(e.target.files[0]);
+    }
+  };
+
   const handleSaveChanges = async () => {
     if (!user) return;
-  
+
     try {
       const userRef = doc(db, "users", user.uid);
-  
-      // Obtén los datos actuales del usuario
-      const userDoc = await getDoc(userRef);
-      const currentData = userDoc.exists() ? userDoc.data() : {};
-      const previousUsername = currentData.username || null;
-  
-      const newUsername = formData.username;
-      const publicPageRef = doc(db, "public_pages", newUsername);
-  
-      if (previousUsername && previousUsername !== newUsername) {
-        // Eliminar el documento asociado al username anterior
-        const oldPublicPageRef = doc(db, "public_pages", previousUsername);
-        await deleteDoc(oldPublicPageRef);
+
+      // Subir la nueva imagen a Firebase Storage si se seleccionó
+      let updatedPhotoURL = formData.photoURL;
+      if (newImage) {
+        const imageRef = ref(storage, `profileImages/${user.uid}`);
+        await uploadBytes(imageRef, newImage);
+        updatedPhotoURL = await getDownloadURL(imageRef);
       }
-  
-      // Actualizar o crear el documento en "users"
-      if (userDoc.exists()) {
-        await updateUser(userRef, formData);
-      } else {
-        await createUser(userRef, formData);
-      }
-  
-      // Crear o actualizar el documento en "public_pages"
+
+      // Actualizar Firestore con la nueva información
+      const updatedData = { ...formData, photoURL: updatedPhotoURL };
+      await updateUser(user.uid, updatedData);
+
+      // Actualizar o crear la página pública
+      const publicPageRef:any = doc(db, "public_pages", formData.username.toString());
       const publicPageDoc = await getDoc(publicPageRef);
       if (publicPageDoc.exists()) {
-        await updatePublicPage(publicPageRef, formData);
+        await updatePublicPage(publicPageRef, updatedData);
       } else {
-        await createPublicPage(user.uid, newUsername);
+        await createPublicPage(user.uid, formData.username);
       }
-  
+
+      setFormData(updatedData); // Actualizar el estado local
       console.log("Perfil actualizado correctamente.");
       setIsEditing(false);
     } catch (error) {
       console.error("Error al actualizar el perfil:", error);
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-2">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold text-center text-gray-800">
-          Perfil del Usuario
-        </h1>
-        <div className="">
+        <h1 className="text-2xl font-bold text-center text-gray-800">Perfil del Usuario</h1>
+        <div>
           <label className="block text-sm font-medium text-center text-gray-700">
             Foto de Perfil:
           </label>
@@ -106,12 +100,18 @@ const Profile: React.FC = () => {
           ) : (
             <p className="text-gray-900">Imagen no disponible</p>
           )}
+          {isEditing && (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="mt-4 block mx-auto"
+            />
+          )}
         </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Nombre de usuario:
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Nombre de usuario:</label>
             {isEditing ? (
               <input
                 type="text"
@@ -121,15 +121,11 @@ const Profile: React.FC = () => {
                 className="w-full px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             ) : (
-              <p className="text-gray-900">
-                {formData.username || "No disponible"}
-              </p>
+              <p className="text-gray-900">{formData.username || "No disponible"}</p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Fecha de nacimiento:
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Fecha de nacimiento:</label>
             {isEditing ? (
               <input
                 type="date"
@@ -139,15 +135,11 @@ const Profile: React.FC = () => {
                 className="w-full px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             ) : (
-              <p className="text-gray-900">
-                {formData.birthdate || "No disponible"}
-              </p>
+              <p className="text-gray-900">{formData.birthdate || "No disponible"}</p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Correo Electrónico:
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Correo Electrónico:</label>
             {isEditing ? (
               <input
                 type="email"
