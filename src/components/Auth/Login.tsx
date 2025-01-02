@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { auth, googleProvider, db } from "../../services/firebase/config";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../services/firebase/config";
 import { useAuth } from "../../context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { doc, setDoc } from "firebase/firestore";
-import { createPublicPage } from "../PublicPage/services/PublicPageService";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
