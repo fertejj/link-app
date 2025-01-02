@@ -7,7 +7,9 @@ import { User } from "../models/User";
  * @param userId - ID del usuario (por ejemplo, user.uid)
  * @returns Datos del usuario en formato User o null si no existe
  */
-export const fetchCurrentUser = async (userId: string): Promise<User | null> => {
+export const fetchCurrentUser = async (
+  userId: string
+): Promise<User | null> => {
   try {
     // Referencia al documento del usuario
     const userRef = doc(db, "users", userId);
@@ -58,29 +60,6 @@ export const createUser = async (userId: string, formData: any) => {
   } catch (error) {
     console.error("Error al crear el usuario:", error);
     throw new Error("Error al crear el usuario: " + error);
-  }
-};
-
-/**
- * Función para obtener un usuario específico
- * @param userId - ID del usuario
- * @returns Los datos del usuario si existe
- */
-export const getUser = async (userId: string): Promise<User | null> => {
-  try {
-    const userRef = doc(db, "users", userId);
-    const userDoc = await getDoc(userRef);
-
-    if (userDoc.exists()) {
-      console.log("Usuario obtenido correctamente");
-      return { id: userDoc.id, ...userDoc.data() } as User;
-    } else {
-      console.warn(`El usuario con ID ${userId} no existe.`);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error al obtener el usuario:", error);
-    throw new Error("Error al obtener el usuario: " + error);
   }
 };
 
