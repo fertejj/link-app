@@ -11,6 +11,7 @@ const Profile: React.FC = () => {
   const [formData, setFormData] = useState({
     username: "",
     birthdate: "",
+    photoURL: "",
     email: "",
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -26,6 +27,7 @@ const Profile: React.FC = () => {
             username: data.username || "",
             birthdate: data.birthdate || "",
             email: data.email || "",
+            photoURL: data.photoURL || "",
           });
         }
       }
@@ -95,9 +97,9 @@ const Profile: React.FC = () => {
           <label className="block text-sm font-medium text-center text-gray-700">
             Foto de Perfil:
           </label>
-          {user?.photoURL ? (
+          {formData.photoURL ? (
             <img
-              src={user.photoURL}
+              src={formData.photoURL}
               alt="Foto de Perfil"
               className="w-24 h-24 mt-2 rounded-full mx-auto"
             />

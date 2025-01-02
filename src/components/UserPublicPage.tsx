@@ -1,15 +1,17 @@
 import React from "react";
+import StatusMessage from "../components/StatusMessage";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import usePublicPage from "../hooks/usePublicPage";
 import useLinks from "../hooks/useLinks";
-import StatusMessage from "../components/StatusMessage";
-
+import useUser from "../hooks/useUser";
 
 const UserPublicPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
   const { publicPage, error } = usePublicPage(username);
   const { links } = useLinks();
-  
+  const { currentUser } = useUser();
+
   if (error) return <StatusMessage message={error} />;
   if (!publicPage) return <StatusMessage message="Cargando..." />;
 
@@ -18,7 +20,7 @@ const UserPublicPage: React.FC = () => {
       {/* Encabezado con la imagen de perfil y el título */}
       <div className="flex flex-col items-center mt-8">
         <img
-          src={publicPage.photoURL || "/default-profile.png"}
+          src={currentUser.photoURL || "/default-profile.png"}
           alt="Perfil"
           className="w-24 h-24 rounded-full border-4 border-white shadow-lg"
         />
